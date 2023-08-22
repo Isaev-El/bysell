@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
-    <title>Bootstrap Example</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>BUYSELL</title>
 </head>
 <body>
-<h1>BUYSELL</h1><hr>
+<h1>BUYSELL</h1>
+<hr>
+<#if user.email??>
+    <h3>Имя пользователя: <i>${user.name}</i></h3>
+    <form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <input type="submit" value="Выйти"/>
+    </form>
+    <#if user.isAdmin()>
+        <a href="/admin">Панель администратора</a>
+    </#if>
+<#else>
+    <a href="/login">Войти</a></h1>
+</#if>
+<hr>
 <h4>Товары со всего Казахстана</h4>
 <form action="/" method="get">
     Поиск по названию объявления: <input type="text" name="title"><br>
@@ -22,7 +31,7 @@
 <#else>
     <h3>Товаров нет</h3>
 </#list>
-
+<#if user.email??>
 <hr>
 <h3>Создать новый товар</h3>
 <form action="/product/create" method="post" enctype="multipart/form-data">
@@ -30,15 +39,12 @@
     Описание объявления: <input type="text" name="description"/><br><br>
     Цена: <input type="number" name="price"/><br><br>
     Город: <input type="text" name="city"/><br><br>
-    Имя: <input type="text" name="author"/><br><br>
-
-
     <#list 1..3 as i>
     Фотография ${i}: <input type="file" name="file"/><br><br>
     </#list><br><br>
-
-
     <input type="submit" value="Добавить товар"/>
+    <input type="hidden" name="_csrf" value="${_csrf.token}">
 </form>
+</#if>
 </body>
 </html>

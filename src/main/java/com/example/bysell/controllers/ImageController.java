@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @RestController
@@ -28,10 +29,11 @@ public class ImageController {
 
 
     public Resource copyImageToResource(String imagePath) throws IOException {
-        // Создание временного файла для сохранения скопированной фотографии
+
         String[] S=imagePath.split("\\.");
+
         File tempFile = File.createTempFile("temp", "."+S[S.length-1]);
-        // Копирование фотографии по указанному пути во временный файл
+
         Path sourcePath = Path.of(imagePath);
         Path targetPath = tempFile.toPath();
         Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -62,10 +64,12 @@ public class ImageController {
         }
         System.out.println(imagePath);
 
+        long fileSize = Files.size(Paths.get(imagePath)); // Получаем размер файла на диске
+
         return ResponseEntity.ok()
                 .header("fileName", image.getOriginalFileName())
                 .contentType(MediaType.valueOf(image.getContentType()))
-                .contentLength(image.getSize())
+                .contentLength(image.getSize()!=null?image.getSize():fileSize)
                 .body(fileResource);
     }
 }
